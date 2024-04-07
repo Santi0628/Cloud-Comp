@@ -1,0 +1,1 @@
+Es un lenguaje de programación de código abierto desarrollado por Microsoft que amplía JavaScript al agregarle tipos estáticos opcionales y otras características modernas de programación orientada a objetos, lo que facilita el desarrollo de aplicaciones más grandes y complejas.

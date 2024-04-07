@@ -1,0 +1,1 @@
+Es un framework de desarrollo web de código abierto y basado en Python que facilita la creación de aplicaciones web complejas, ofreciendo una arquitectura sólida, segura y escalable. Proporciona herramientas para manejar la lógica del servidor, la base de datos y la interfaz de usuario, lo que permite a los desarrolladores crear aplicaciones de forma eficiente y mantenible.

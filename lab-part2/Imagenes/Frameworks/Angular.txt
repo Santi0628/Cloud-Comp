@@ -1,0 +1,1 @@
+Es un marco de desarrollo web de código abierto utilizado principalmente para crear aplicaciones de una sola página (SPA). Ayuda a estructurar y organizar el código JavaScript del lado del cliente, facilitando la manipulación del DOM, el enlace de datos bidireccional y la gestión de eventos, lo que permite crear interfaces de usuario dinámicas y interactivas.

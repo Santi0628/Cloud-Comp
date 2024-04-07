@@ -1,0 +1,1 @@
+Es un lenguaje de programación orientado a la estadística, muy utilizado en cálculo y análisis estadístico, así como en la generación de gráficos estadísticos. Debido a este enfoque, el lenguaje R es muy usado en investigación científica y biomédica, matemáticas financieras, minería de datos, Machine Learning y Data Science.

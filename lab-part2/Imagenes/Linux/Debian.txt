@@ -1,0 +1,1 @@
+Es una de las distribuciones más confiables. La mayoría de las distribuciones Linux son derivadas de Debian, ¿por qué? Porque es una de las más antiguas y es muy estable. Si creas una distribución basada en Debian podrás contar con todas las actualizaciones de seguridad, rendimiento y compatibilidad que trae el sistema.

@@ -1,26 +1,88 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
+	"html/template"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
 
+// Estructura para pasar datos a la plantilla HTML
+type PageData struct {
+	Hostname string
+	Tema     string
+	TemaDesc string
+	Imagenes []ImageInfo
+}
+
+// Estructura para almacenar información de imagen junto con su texto
+type ImageInfo struct {
+	Nombre    string
+	Texto     string
+	Link      string
+	NombreImg string
+	Base64    string
+}
+
 func main() {
-	// Definir la ruta del directorio de imágenes
 
-	var args []string
+	enlaces := map[string]string{
+		"React JS.png": "https://react.dev/",
+		"Spring.png":   "https://spring.io/",
+		"OnRails.png":  "https://rubyonrails.org/",
+		"Angular.png":  "https://angularjs.org/",
+		"Django.jpg":   "https://www.djangoproject.com/",
+		"Express.png":  "https://expressjs.com/es/",
+		"Flask.png":    "https://flask.palletsprojects.com/en/3.0.x/",
+		"Laravel.jpg":  "https://laravel.com/",
+		"Symfony.png":  "https://symfony.es/",
+		"Vue JS.jpg":   "https://vuejs.org/",
 
-	for _, arg := range os.Args {
-		args = append(args, arg)
+		"C#.png":         "https://learn.microsoft.com/es-es/dotnet/csharp/",
+		"Golang.png":     "https://go.dev/",
+		"Java.png":       "https://www.java.com/es/",
+		"JavaScript.png": "https://developer.mozilla.org/es/docs/Web/JavaScript",
+		"Kotlin.jpg":     "https://kotlinlang.org/",
+		"Php.jpg":        "https://www.php.net/",
+		"Python.png":     "https://www.python.org/",
+		"R.png":          "https://www.r-project.org/",
+		"SQL.png":        "https://es.wikipedia.org/wiki/SQL",
+		"TypeScript.png": "https://www.typescriptlang.org/",
+
+		"Debian.jpg":     "https://www.debian.org/",
+		"Linux mint.png": "https://linuxmint.com/",
+		"Red hat.png":    "https://www.redhat.com/es",
+		"Ubuntu.png":     "https://ubuntu.com/",
 	}
 
-	directorio := args[2] + "\\" + args[3]
+	var nombresImagenes []string
+
+	// Obtener argumentos de la línea de comandos
+	args := os.Args
+
+	if len(args) < 4 {
+		fmt.Println("Uso: <puerto> <directorio> <tema>")
+		return
+	}
+
 	puerto := args[1]
+	directorio := args[2] + "\\" + args[3]
 	tema := args[3]
+	temaDesc := "default"
+
+	if tema == "Lenguajes de programacion" {
+		temaDesc = "Los lenguajes de programación son herramientas que permiten a los programadores comunicarse con las computadoras, dándoles instrucciones para realizar tareas específicas mediante un conjunto de reglas y sintaxis definidas.		"
+	} else if tema == "Frameworks" {
+		temaDesc = "Son conjuntos de herramientas y librerías predefinidas que proporcionan una estructura y funcionalidades comunes para facilitar el desarrollo de software, permitiendo a los programadores enfocarse en la lógica específica de sus aplicaciones en lugar de reinventar soluciones genéricas."
+	} else if tema == "Linux" {
+		temaDesc = "Es un sistema operativo de código abierto y gratuito basado en el núcleo Linux, desarrollado por una comunidad de colaboradores en todo el mundo. Es conocido por su estabilidad, seguridad y flexibilidad, y es ampliamente utilizado en una variedad de dispositivos, desde servidores hasta dispositivos móviles y sistemas integrados. Linux ofrece una amplia gama de distribuciones, cada una adaptada para diferentes propósitos y preferencias de los usuarios, lo que lo convierte en una opción popular tanto para usuarios domésticos como para empresas."
+	}
 
 	// Leer los archivos del directorio
 	archivos, err := os.ReadDir(directorio)
@@ -36,169 +98,113 @@ func main() {
 		".jpeg": true,
 		".png":  true,
 	}
+
+	// Crear una lista de ImageInfo para almacenar el nombre de la imagen y su texto correspondiente
+	var imagenesInfo []ImageInfo
+
 	for _, archivo := range archivos {
-		extension := strings.ToLower(archivo.Name()[len(archivo.Name())-4:])
+		nombreArchivo := archivo.Name()
+		extension := strings.ToLower(filepath.Ext(nombreArchivo))
 		if _, ok := formatosAceptados[extension]; ok {
-			imagenes = append(imagenes, archivo.Name())
+			imagenes = append(imagenes, nombreArchivo)
+			nombresImagenes = append(nombresImagenes, nombreArchivo)
+
+			// Construir el nombre del archivo de texto correspondiente
+			nombreArchivoTxt := strings.TrimSuffix(nombreArchivo, extension) + ".txt"
+			rutaArchivoTxt := filepath.Join(directorio, nombreArchivoTxt)
+
+			// Leer el contenido del archivo de texto
+			texto, err := ioutil.ReadFile(rutaArchivoTxt)
+			if err != nil {
+				fmt.Printf("Error al leer el archivo %s: %v\n", nombreArchivoTxt, err)
+				continue
+			}
+
+			// Obtener el enlace correspondiente al nombre de la imagen
+			enlace, ok := enlaces[nombreArchivo]
+			if !ok {
+				fmt.Printf("No se encontró enlace para la imagen: %s\n", nombreArchivo)
+				continue
+			}
+
+			rutaImagen := filepath.Join(directorio, nombreArchivo)
+			imagenBase64, err := leerImagenBase64(rutaImagen)
+			if err != nil {
+				fmt.Printf("Error al leer la imagen %s como base64: %v\n", nombreArchivo, err)
+				continue
+			}
+
+			// Agregar la información de la imagen (nombre, texto y enlace) a la lista de ImageInfo
+			imagenesInfo = append(imagenesInfo, ImageInfo{
+				Nombre:    nombreArchivo,
+				Texto:     string(texto),
+				Link:      enlace,
+				NombreImg: nombreArchivo,
+				Base64:    imagenBase64,
+			})
 		}
 	}
 
 	// Verificar si hay suficientes imágenes para mostrar
-	if len(imagenes) < 4 {
-		fmt.Println("No hay suficientes imágenes para mostrar.")
+	if len(imagenesInfo) < 4 {
+		fmt.Println("No hay suficientes imágenes con texto para mostrar.")
 		return
 	}
 
 	// Aleatorizar el orden de las imágenes
 	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(imagenes), func(i, j int) {
-		imagenes[i], imagenes[j] = imagenes[j], imagenes[i]
+	rand.Shuffle(len(imagenesInfo), func(i, j int) {
+		imagenesInfo[i], imagenesInfo[j] = imagenesInfo[j], imagenesInfo[i]
 	})
 
-	// Tomar las primeras tres imágenes aleatorizadas
-	imagenesMostrar := imagenes[:4]
+	// Tomar las primeras cuatro imágenes aleatorizadas
+	imagenesMostrar := imagenesInfo[:4]
 
+	// Obtener el nombre del host
 	hostname, err := os.Hostname()
 	if err != nil {
 		fmt.Println("Error al obtener el nombre del host:", err)
 		return
 	}
 
+	// Definir la estructura de datos para pasar a la plantilla
+	data := PageData{
+		Hostname: hostname,
+		Tema:     tema,
+		TemaDesc: temaDesc,
+		Imagenes: imagenesMostrar,
+	}
+
 	// Manejador HTTP que sirve el contenido HTML
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galería de Fotos</title>
-    <style>
-        /* Estilos para la barra de navegación */
-        .navbar {
-            background-color: #333;
-            overflow: hidden;
-        }
+		// Cargar la plantilla HTML
+		tmpl := template.Must(template.ParseFiles("template.html"))
 
-        .navbar a {
-            float: left;
-            display: block;
-            color: #f2f2f2;
-            text-align: center;
-            padding: 14px 20px;
-            text-decoration: none;
-        }
-
-        .navbar a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-
-        /* Estilos para la galería de fotos */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .gallery .image-container {
-            position: relative;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .gallery img {
-            width: 100%;
-            height: auto;
-        }
-
-        .image-caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            padding: 5px;
-            box-sizing: border-box;
-            text-align: center;
-        }
-
-		footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-
-		#hostname {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #FFFFFF;
-        }
-
-		h1 {
-			text-align: center;
-		  }
-    </style>
-</head>
-<body>
-
-<div id="hostname">`+hostname+`</div>
-
-<!-- Barra de navegación -->
-<div class="navbar">
-    <a href="https://www.facebook.com/profile.php?id=61556918033342">Santiago Garcia Cañas</a>
-    <a href="https://www.facebook.com/profile.php?id=100078462336757">Sebastian Carmona Tapasco</a>
-    <a href="https://www.facebook.com/nodier.alzatesolano">Nodier Alberto Alzate Solano</a>
-</div>
-
-<h1>Tema: `+tema+`</h1>
-
-<!-- Galería de fotos -->
-<div class="gallery">
-`)
-		// Insertar las imágenes en el HTML
-		for _, imagen := range imagenesMostrar {
-			// Construir la URL completa de la imagen
-			imagenURL := "/imagenes/" + imagen
-			// Agregar la etiqueta <div> para contener la imagen y el nombre
-			fmt.Fprintf(w, `<div class="image-container"><img src="%s" alt="%s"><div class="image-caption">%s</div></div>`, imagenURL, imagen, imagen)
+		// Ejecutar la plantilla y pasar los datos
+		err := tmpl.Execute(w, data)
+		if err != nil {
+			fmt.Println("Error al ejecutar la plantilla:", err)
+			return
 		}
-
-		// Cerrar el HTML
-		fmt.Fprint(w, `
-</div>
-
-</body>
-
-<footer>
-    Universidad del Quindío 2024 - Computación en la nube
-</footer>
-
-</html>
-`)
 	})
 
 	// Servir las imágenes estáticas
 	http.Handle("/imagenes/", http.StripPrefix("/imagenes/", http.FileServer(http.Dir(directorio))))
 
-	// Iniciar el servidor en el puerto 8080
+	// Iniciar el servidor en el puerto especificado
 	fmt.Println("Servidor escuchando en http://localhost:" + puerto)
 	http.ListenAndServe(":"+puerto, nil)
 }
 
-func path() string {
-	dir, err := os.Getwd()
+func leerImagenBase64(ruta string) (string, error) {
+	// Leer la imagen como un array de bytes
+	imgBytes, err := os.ReadFile(ruta)
 	if err != nil {
-		return "Error: " + err.Error()
+		return "", err
 	}
-	return dir
+
+	// Codificar los bytes de la imagen en base64
+	encodedImg := base64.StdEncoding.EncodeToString(imgBytes)
+
+	return encodedImg, nil
 }

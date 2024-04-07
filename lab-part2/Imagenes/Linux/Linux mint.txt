@@ -1,0 +1,1 @@
+Está basada en Ubuntu y está orientada a un público principiante. De este modo, esta distro busca acercar Linux aún más a la comunidad general brindando una experiencia parecida a Windows. Si usas esta distro podrás ver una interfaz muy similar a la de Windows.

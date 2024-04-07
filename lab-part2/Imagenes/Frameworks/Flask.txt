@@ -1,0 +1,1 @@
+Es un microframework de Python para construir aplicaciones web. Es minimalista y fácil de usar, pero lo suficientemente poderoso para desarrollar aplicaciones web complejas. Ofrece flexibilidad y extensibilidad, permitiendo a los desarrolladores elegir las herramientas y bibliotecas que mejor se adapten a sus necesidades.

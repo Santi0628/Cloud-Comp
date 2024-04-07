@@ -1,0 +1,5 @@
+Es un framework de JavaScript utilizado para construir interfaces de usuario interactivas y dinámicas en aplicaciones web. Se centra en la creación de componentes reutilizables que gestionan su propio estado, lo que simplifica el desarrollo de aplicaciones escalables y mantenibles.
+
+
+
+

@@ -1,0 +1,1 @@
+Es un lenguaje de programación de alto nivel, compilado, creado por JetBrains. Es un lenguaje moderno y seguro, y es muy adecuado para el desarrollo de aplicaciones Android. Kotlin es un lenguaje relativamente nuevo, pero ha ganado rápidamente popularidad en la comunidad de desarrolladores de Android.

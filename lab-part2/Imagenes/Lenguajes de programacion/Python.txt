@@ -1,0 +1,1 @@
+Es de código abierto, con una sintaxis simple y sencilla de entender, quizá el más fácil de este listado. Es idóneo para iniciarse en el mundo de la programación. Es muy versátil por lo que tiene múltiples áreas de aplicación como: inteligencia artificial, Big Data y desarrollo web.

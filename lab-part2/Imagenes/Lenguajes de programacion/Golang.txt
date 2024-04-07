@@ -1,0 +1,1 @@
+Es un lenguaje de programación de alto nivel, compilado, creado por Google. Es un lenguaje moderno y eficiente, y es muy adecuado para el desarrollo de aplicaciones web, aplicaciones de servidor y aplicaciones de alto rendimiento. Go es un lenguaje relativamente nuevo, pero ha ganado rápidamente popularidad en la comunidad de desarrolladores.

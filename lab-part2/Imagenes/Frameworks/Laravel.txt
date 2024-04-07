@@ -1,0 +1,1 @@
+Es un framework de desarrollo web de código abierto, basado en PHP, que sigue el patrón de arquitectura MVC (Modelo-Vista-Controlador). Destaca por su elegancia, simplicidad y facilidad de uso, ofreciendo características como enrutamiento fácil de usar, migraciones de base de datos, ORM integrado y una robusta capa de seguridad.

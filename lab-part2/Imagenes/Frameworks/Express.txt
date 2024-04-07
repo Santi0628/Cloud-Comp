@@ -1,0 +1,1 @@
+Es un framework web minimalista y flexible para Node.js, diseñado para facilitar la creación de aplicaciones web y APIs de manera rápida y sencilla, utilizando un conjunto de funciones middleware para manejar solicitudes HTTP y simplificar la configuración de rutas.

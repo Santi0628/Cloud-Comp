@@ -1,0 +1,6 @@
+Es un framework de desarrollo de aplicaciones en Java que facilita la creación de aplicaciones empresariales, proporcionando un enfoque modular y flexible para el desarrollo, gestión y despliegue de aplicaciones Java.
+
+
+
+
+
